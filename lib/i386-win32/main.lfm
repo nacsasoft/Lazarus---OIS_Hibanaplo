@@ -1,0 +1,209 @@
+object frmMain: TfrmMain
+  Left = 484
+  Height = 439
+  Top = 257
+  Width = 1044
+  BorderIcons = [biSystemMenu, biMinimize]
+  BorderStyle = bsSingle
+  Caption = 'OIS Siplace Errors'
+  ClientHeight = 439
+  ClientWidth = 1044
+  DesignTimePPI = 120
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '1.8.4.0'
+  object GroupBox3: TGroupBox
+    Left = 8
+    Height = 416
+    Top = 8
+    Width = 1024
+    Caption = 'Géphibák lekérdezése....'
+    ClientHeight = 391
+    ClientWidth = 1020
+    TabOrder = 0
+    object GroupBox4: TGroupBox
+      Left = 16
+      Height = 360
+      Top = 16
+      Width = 472
+      Caption = 'Lekérdezés beállításai...'
+      ClientHeight = 335
+      ClientWidth = 468
+      TabOrder = 0
+      object Label6: TLabel
+        Left = 19
+        Height = 20
+        Top = 39
+        Width = 29
+        Caption = 'Sor :'
+        ParentColor = False
+      end
+      object Label7: TLabel
+        Left = 19
+        Height = 20
+        Top = 80
+        Width = 34
+        Caption = 'Gép :'
+        ParentColor = False
+      end
+      object Label8: TLabel
+        Left = 19
+        Height = 20
+        Top = 160
+        Width = 294
+        Caption = 'Riportálási időszak (mm/dd/yyyy hh:mm:ss) :'
+        ParentColor = False
+      end
+      object cmbSorok: TComboBox
+        Left = 104
+        Height = 28
+        Top = 31
+        Width = 125
+        ItemHeight = 20
+        OnChange = cmbSorokChange
+        TabOrder = 0
+      end
+      object Label9: TLabel
+        Left = 168
+        Height = 20
+        Top = 200
+        Width = 32
+        Caption = ' - tól'
+        ParentColor = False
+      end
+      object Label10: TLabel
+        Left = 400
+        Height = 20
+        Top = 200
+        Width = 27
+        Caption = ' - ig'
+        ParentColor = False
+      end
+      object btnRiportKeszitese: TButton
+        Left = 296
+        Height = 36
+        Top = 280
+        Width = 158
+        Caption = 'Géphibák...'
+        OnClick = btnRiportKesziteseClick
+        TabOrder = 1
+      end
+      object cmbGepek: TComboBox
+        Left = 104
+        Height = 28
+        Top = 72
+        Width = 125
+        ItemHeight = 20
+        TabOrder = 2
+      end
+      object medTol: TMaskEdit
+        Left = 19
+        Height = 28
+        Top = 192
+        Width = 150
+        CharCase = ecNormal
+        MaxLength = 19
+        TabOrder = 3
+        EditMask = '00/00/0000 00:00:00;1;_'
+        Text = '  /  /       :  :  '
+        SpaceChar = '_'
+      end
+      object medIg: TMaskEdit
+        Left = 248
+        Height = 28
+        Top = 192
+        Width = 150
+        CharCase = ecNormal
+        MaxLength = 19
+        TabOrder = 4
+        EditMask = '00/00/0000 00:00:00;1;_'
+        Text = '  /  /       :  :  '
+        SpaceChar = '_'
+      end
+      object btnFelveteliHibak: TButton
+        Left = 19
+        Height = 36
+        Top = 280
+        Width = 158
+        Caption = 'Felvételi hibák...'
+        OnClick = btnFelveteliHibakClick
+        TabOrder = 5
+      end
+      object Label13: TLabel
+        Left = 19
+        Height = 20
+        Top = 120
+        Width = 67
+        Caption = 'Alkatrész :'
+        ParentColor = False
+      end
+      object edtAlkatresz: TEdit
+        Left = 104
+        Height = 28
+        Hint = 'Géphiba riportáláskor nem kell kitölteni!'
+        Top = 112
+        Width = 176
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 6
+      end
+      object chkOsszesSoronKeres: TCheckBox
+        Left = 296
+        Height = 24
+        Hint = 'Bekapcsolás esetén az alkatrészhez tartozó felvételi'#13#10'hibákat az összes sorról összegyüjti (lassabb!!)!'
+        Top = 116
+        Width = 151
+        Caption = 'Összes soron keres!'
+        ParentShowHint = False
+        ShowHint = True
+        TabOrder = 7
+      end
+    end
+    object GroupBox2: TGroupBox
+      Left = 520
+      Height = 360
+      Top = 16
+      Width = 479
+      Caption = 'Riport...'
+      ClientHeight = 335
+      ClientWidth = 475
+      TabOrder = 1
+      object stgRiport: TStringGrid
+        Left = 16
+        Height = 320
+        Top = 8
+        Width = 448
+        ColCount = 2
+        FixedCols = 0
+        MouseWheelOption = mwGrid
+        Options = [goFixedVertLine, goFixedHorzLine, goVertLine, goHorzLine, goRangeSelect, goColSizing, goRowSelect, goDblClickAutoSize]
+        RowCount = 2
+        ScrollBars = ssVertical
+        TabOrder = 0
+        ColWidths = (
+          243
+          165
+        )
+        Cells = (
+          2
+          0
+          0
+          'Dátum / Idő'
+          1
+          0
+          'Esemény'
+        )
+      end
+    end
+  end
+  object btnDBSzinkron1: TButton
+    Left = 280
+    Height = 36
+    Top = 88
+    Width = 192
+    Caption = 'Adatbázis szinkronizálás'
+    OnClick = btnDBSzinkronClick
+    TabOrder = 1
+    Visible = False
+  end
+end
