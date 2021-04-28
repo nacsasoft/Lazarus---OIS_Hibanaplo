@@ -1,12 +1,12 @@
 object frmMain: TfrmMain
-  Left = 484
-  Height = 439
-  Top = 257
+  Left = 478
+  Height = 699
+  Top = 135
   Width = 1044
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'OIS Siplace Errors'
-  ClientHeight = 439
+  ClientHeight = 699
   ClientWidth = 1044
   DesignTimePPI = 120
   OnShow = FormShow
@@ -205,5 +205,140 @@ object frmMain: TfrmMain
     OnClick = btnDBSzinkronClick
     TabOrder = 1
     Visible = False
+  end
+  object GroupBox1: TGroupBox
+    Left = 8
+    Height = 240
+    Top = 440
+    Width = 656
+    Caption = 'Feeder infók, anyagkód alapján...'
+    ClientHeight = 215
+    ClientWidth = 652
+    TabOrder = 2
+    object Label14: TLabel
+      Left = 8
+      Height = 20
+      Top = 24
+      Width = 67
+      Caption = 'Alkatrész :'
+      ParentColor = False
+    end
+    object edtAlkatresz1: TEdit
+      Left = 96
+      Height = 28
+      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
+      Top = 16
+      Width = 176
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 0
+      Text = 'INV1-00012-001-06236'
+    end
+    object Label15: TLabel
+      Left = 16
+      Height = 20
+      Top = 168
+      Width = 52
+      Caption = 'Feeder :'
+      ParentColor = False
+    end
+    object edtFeederAzonosito: TEdit
+      Left = 80
+      Height = 28
+      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
+      Top = 160
+      Width = 163
+      ParentShowHint = False
+      ReadOnly = True
+      ShowHint = True
+      TabOrder = 1
+    end
+    object btnFeederKeres: TButton
+      Left = 472
+      Height = 36
+      Top = 152
+      Width = 158
+      Caption = 'Keresés...'
+      OnClick = btnFeederKeresClick
+      TabOrder = 2
+    end
+    object Label11: TLabel
+      Left = 16
+      Height = 20
+      Top = 88
+      Width = 29
+      Caption = 'Sor :'
+      ParentColor = False
+    end
+    object medTol1: TMaskEdit
+      Left = 296
+      Height = 28
+      Top = 16
+      Width = 126
+      CharCase = ecNormal
+      MaxLength = 19
+      TabOrder = 3
+      EditMask = '00/00/0000 00:00:00;1;_'
+      Text = '  /  /       :  :  '
+      SpaceChar = '_'
+    end
+    object Label12: TLabel
+      Left = 424
+      Height = 20
+      Top = 24
+      Width = 32
+      Caption = ' - tól'
+      ParentColor = False
+    end
+    object medIg1: TMaskEdit
+      Left = 480
+      Height = 28
+      Top = 16
+      Width = 123
+      CharCase = ecNormal
+      MaxLength = 19
+      TabOrder = 4
+      EditMask = '00/00/0000 00:00:00;1;_'
+      Text = '  /  /       :  :  '
+      SpaceChar = '_'
+    end
+    object Label16: TLabel
+      Left = 608
+      Height = 20
+      Top = 24
+      Width = 27
+      Caption = ' - ig'
+      ParentColor = False
+    end
+    object edtSor: TEdit
+      Left = 80
+      Height = 28
+      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
+      Top = 80
+      Width = 163
+      ParentShowHint = False
+      ReadOnly = True
+      ShowHint = True
+      TabOrder = 5
+    end
+    object Label17: TLabel
+      Left = 16
+      Height = 20
+      Top = 128
+      Width = 38
+      Caption = 'Gép : '
+      ParentColor = False
+    end
+    object edtGep: TEdit
+      Left = 80
+      Height = 28
+      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
+      Top = 120
+      Width = 163
+      ParentShowHint = False
+      ReadOnly = True
+      ShowHint = True
+      TabOrder = 6
+    end
   end
 end

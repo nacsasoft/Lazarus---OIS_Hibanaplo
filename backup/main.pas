@@ -15,23 +15,38 @@ type
     btnDBSzinkron1: TButton;
     btnRiportKeszitese: TButton;
     btnFelveteliHibak: TButton;
+    btnFeederKeres: TButton;
     chkOsszesSoronKeres: TCheckBox;
     cmbGepek: TComboBox;
     cmbSorok: TComboBox;
     edtAlkatresz: TEdit;
+    edtAlkatresz1: TEdit;
+    edtFeederAzonosito: TEdit;
+    edtSor: TEdit;
+    edtGep: TEdit;
+    GroupBox1: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     GroupBox2: TGroupBox;
     Label10: TLabel;
+    Label11: TLabel;
+    Label12: TLabel;
     Label13: TLabel;
+    Label14: TLabel;
+    Label15: TLabel;
+    Label16: TLabel;
+    Label17: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
     Label9: TLabel;
     medIg: TMaskEdit;
+    medIg1: TMaskEdit;
     medTol: TMaskEdit;
+    medTol1: TMaskEdit;
     stgRiport: TStringGrid;
     procedure btnDBSzinkronClick(Sender: TObject);
+    procedure btnFeederKeresClick(Sender: TObject);
     procedure btnFelveteliHibakClick(Sender: TObject);
     procedure btnRiportKesziteseClick(Sender: TObject);
     procedure cmbSorokChange(Sender: TObject);
@@ -62,6 +77,8 @@ var
 begin
   medTol.Text := FormatDateTime('mm/dd/yyyy hh:', Now) + '00:00';
   medIg.Text := FormatDateTime('mm/dd/yyyy hh:', Now) + '00:00';
+  medTol1.Text := FormatDateTime('mm/dd/yyyy hh:', Now) + '00:00';
+  medIg1.Text := FormatDateTime('mm/dd/yyyy hh:', Now) + '00:00';
 
   //sorok feltöltése:
   dbSorok := cSqliteDatabase.Create('sorok', 'SELECT * FROM sorok ORDER BY sname');
@@ -172,6 +189,81 @@ begin
 
 end;
 
+procedure TfrmMain.btnFeederKeresClick(Sender: TObject);
+var
+  dbOis_adatok, dbStations : cMSSQLDatabase;
+  dbServers : cSqliteDatabase;
+  sSQL : string;
+  iSorid, iserverid, lid : integer;
+
+  sUsedComponentTableName : string;
+
+  sLine, sMachine, sFeeder, sDatum : string;
+
+begin
+
+  //meg kell nézni hogy az adott időpontban melyik soron/gépen volt a feeder:
+
+    //szerverek azonosítói:
+    dbServers := cSqliteDatabase.Create('szerverek', 'SELECT * FROM szerverek', 'sid');
+
+    repeat
+      iserverid := dbServers.pDataset.FieldByName('sid').AsInteger;
+      case iserverid of
+        1,2 : sUsedComponentTableName := 'V_USEDCOMPONENTS_160';
+        3,4 : sUsedComponentTableName := 'V_USEDCOMPONENTS12';
+      end;
+
+      sLine := '';
+      sMachine := '';
+      sDatum := '';
+      sFeeder := '';
+
+      //csatlakozás a kiválasztott sorhoz tartozó szerverre:
+      dbOis_adatok := cMSSQLDatabase.Create('SiplaceOisUser', 'VUTB&&42ukbhSnG7',
+              dbServers.pDataset.FieldByName('sName').AsString, 'SiplaceOIS');
+      sSQL := 'SELECT TOP 1 * FROM SiplaceOIS.dbo.' + sUsedComponentTableName + ' ' +
+              'WHERE SiplaceOIS.dbo.' + sUsedComponentTableName + '.lPartNumber = ' +
+              '(SELECT SiplaceOIS.dbo.PARTNUMBER.lPartNumber FROM SiplaceOIS.dbo.PARTNUMBER ' +
+              'WHERE SiplaceOIS.dbo.PARTNUMBER.strPartNumber = ''' + trim(edtAlkatresz1.text) + ''') ' +
+              'AND SiplaceOIS.dbo.' + sUsedComponentTableName + '.dtCreated >= ''' + medTol1.Text + '''' +
+              'AND SiplaceOIS.dbo.' + sUsedComponentTableName + '.dtCreated <= ''' + medIg1.Text + '''';
+      dbOis_adatok.RunSQL(sSQL);
+      if (dbOis_adatok.GetRecordCount() > 0) then
+      begin
+        //megvan a feeder:
+        sFeeder := dbOis_adatok.pSQLQuery1.FieldByName('strFeederID').AsString;
+        //ekkor használta:
+        sDatum := dbOis_adatok.pSQLQuery1.FieldByName('dtCreated').AsString;
+        //kell a sor és a gép:
+        lid := dbOis_adatok.pSQLQuery1.FieldByName('lid').AsInteger;  //lid alapján meg lehet keresni a gépet...
+        dbStations := cMSSQLDatabase.Create('SiplaceOisUser', 'VUTB&&42ukbhSnG7',
+              dbServers.pDataset.FieldByName('sName').AsString, 'SiplaceOIS');
+        sSQL := 'SELECT * FROM SiplaceOIS.dbo.STATION WHERE lid = ' + inttostr(lid);
+        dbStations.RunSQL(sSQL);
+        sLine := dbStations.pSQLQuery1.FieldByName('strLine').AsString;
+        sMachine := dbStations.pSQLQuery1.FieldByName('strStation').AsString;
+        dbStations.Terminate();
+      end;
+      //ha van adat akkor mehet a listába:
+      if (length(sFeeder) > 0) then
+        ShowMessage('Sor : ' + sLine + #10 + 'Gép : ' + sMachine + #10 + 'Feeder : ' + sFeeder + #10 + 'Dátum : ' + sDatum);
+
+      dbOis_adatok.Terminate();
+
+      dbServers.pDataset.Next;
+    until dbServers.pDataset.EOF;
+
+
+
+
+
+
+
+
+  dbServers.Terminate();
+end;
+
 procedure TfrmMain.btnFelveteliHibakClick(Sender: TObject);
 var
   dbOis_adatok : cMSSQLDatabase;
@@ -206,8 +298,8 @@ begin
           'AND SiplaceOIS.dbo.ErrorMessage.LanguageCode = ''hu''' +
           'AND SiplaceOIS.dbo.STATION.lId = SiplaceOIS.dbo.PICKUPERROR.lId ' +
           'AND SiplaceOIS.dbo.PICKUPERROR.strPartNumber = ''' + edtAlkatresz.Text + ''' ' +
-          'AND SiplaceOIS.dbo.PICKUPERROR.dtCreated >= ''' + medTol.Text + ''' ' +
-          'AND SiplaceOIS.dbo.PICKUPERROR.dtCreated <= ''' + medIg.Text + '''';
+          'AND SiplaceOIS.dbo.PICKUPERROR.dtTime >= ''' + medTol.Text + ''' ' +
+          'AND SiplaceOIS.dbo.PICKUPERROR.dtTime <= ''' + medIg.Text + '''';
   dbOis_adatok.RunSQL(sSQL);
 
   //eredmény exportálás excel-be:
