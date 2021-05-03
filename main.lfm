@@ -1,12 +1,12 @@
 object frmMain: TfrmMain
-  Left = 478
-  Height = 699
-  Top = 135
+  Left = 486
+  Height = 780
+  Top = 121
   Width = 1044
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'OIS Siplace Errors'
-  ClientHeight = 699
+  ClientHeight = 780
   ClientWidth = 1044
   DesignTimePPI = 120
   OnShow = FormShow
@@ -208,13 +208,14 @@ object frmMain: TfrmMain
   end
   object GroupBox1: TGroupBox
     Left = 8
-    Height = 240
+    Height = 328
     Top = 440
-    Width = 656
+    Width = 904
     Caption = 'Feeder infók, anyagkód alapján...'
-    ClientHeight = 215
-    ClientWidth = 652
+    ClientHeight = 303
+    ClientWidth = 900
     TabOrder = 2
+    Visible = False
     object Label14: TLabel
       Left = 8
       Height = 20
@@ -234,41 +235,14 @@ object frmMain: TfrmMain
       TabOrder = 0
       Text = 'INV1-00012-001-06236'
     end
-    object Label15: TLabel
-      Left = 16
-      Height = 20
-      Top = 168
-      Width = 52
-      Caption = 'Feeder :'
-      ParentColor = False
-    end
-    object edtFeederAzonosito: TEdit
-      Left = 80
-      Height = 28
-      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
-      Top = 160
-      Width = 163
-      ParentShowHint = False
-      ReadOnly = True
-      ShowHint = True
-      TabOrder = 1
-    end
     object btnFeederKeres: TButton
-      Left = 472
+      Left = 728
       Height = 36
-      Top = 152
+      Top = 8
       Width = 158
       Caption = 'Keresés...'
       OnClick = btnFeederKeresClick
-      TabOrder = 2
-    end
-    object Label11: TLabel
-      Left = 16
-      Height = 20
-      Top = 88
-      Width = 29
-      Caption = 'Sor :'
-      ParentColor = False
+      TabOrder = 1
     end
     object medTol1: TMaskEdit
       Left = 296
@@ -277,7 +251,7 @@ object frmMain: TfrmMain
       Width = 126
       CharCase = ecNormal
       MaxLength = 19
-      TabOrder = 3
+      TabOrder = 2
       EditMask = '00/00/0000 00:00:00;1;_'
       Text = '  /  /       :  :  '
       SpaceChar = '_'
@@ -297,7 +271,7 @@ object frmMain: TfrmMain
       Width = 123
       CharCase = ecNormal
       MaxLength = 19
-      TabOrder = 4
+      TabOrder = 3
       EditMask = '00/00/0000 00:00:00;1;_'
       Text = '  /  /       :  :  '
       SpaceChar = '_'
@@ -310,35 +284,38 @@ object frmMain: TfrmMain
       Caption = ' - ig'
       ParentColor = False
     end
-    object edtSor: TEdit
-      Left = 80
-      Height = 28
-      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
+    object stgFeederek: TStringGrid
+      Left = 8
+      Height = 208
       Top = 80
-      Width = 163
-      ParentShowHint = False
-      ReadOnly = True
-      ShowHint = True
-      TabOrder = 5
-    end
-    object Label17: TLabel
-      Left = 16
-      Height = 20
-      Top = 128
-      Width = 38
-      Caption = 'Gép : '
-      ParentColor = False
-    end
-    object edtGep: TEdit
-      Left = 80
-      Height = 28
-      Hint = 'Géphiba riportáláskor nem kell kitölteni!'
-      Top = 120
-      Width = 163
-      ParentShowHint = False
-      ReadOnly = True
-      ShowHint = True
-      TabOrder = 6
+      Width = 878
+      AutoEdit = False
+      AutoFillColumns = True
+      ColCount = 3
+      Columns = <      
+        item
+          Alignment = taLeftJustify
+          Title.Alignment = taCenter
+          Title.Caption = 'Sor'
+          Width = 291
+        end      
+        item
+          Title.Alignment = taCenter
+          Title.Caption = 'Gép'
+          Width = 291
+        end      
+        item
+          Title.Alignment = taCenter
+          Title.Caption = 'Feeder azonosító'
+          Width = 292
+        end>
+      FixedCols = 0
+      TabOrder = 4
+      ColWidths = (
+        291
+        291
+        292
+      )
     end
   end
 end

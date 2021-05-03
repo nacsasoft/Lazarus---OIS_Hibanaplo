@@ -21,21 +21,15 @@ type
     cmbSorok: TComboBox;
     edtAlkatresz: TEdit;
     edtAlkatresz1: TEdit;
-    edtFeederAzonosito: TEdit;
-    edtSor: TEdit;
-    edtGep: TEdit;
     GroupBox1: TGroupBox;
     GroupBox3: TGroupBox;
     GroupBox4: TGroupBox;
     GroupBox2: TGroupBox;
     Label10: TLabel;
-    Label11: TLabel;
     Label12: TLabel;
     Label13: TLabel;
     Label14: TLabel;
-    Label15: TLabel;
     Label16: TLabel;
-    Label17: TLabel;
     Label6: TLabel;
     Label7: TLabel;
     Label8: TLabel;
@@ -45,6 +39,7 @@ type
     medTol: TMaskEdit;
     medTol1: TMaskEdit;
     stgRiport: TStringGrid;
+    stgFeederek: TStringGrid;
     procedure btnDBSzinkronClick(Sender: TObject);
     procedure btnFeederKeresClick(Sender: TObject);
     procedure btnFelveteliHibakClick(Sender: TObject);
@@ -194,7 +189,7 @@ var
   dbOis_adatok, dbStations : cMSSQLDatabase;
   dbServers : cSqliteDatabase;
   sSQL : string;
-  iSorid, iserverid, lid : integer;
+  iSorid, iserverid, lid, iRowID : integer;
 
   sUsedComponentTableName : string;
 
@@ -202,10 +197,15 @@ var
 
 begin
 
-  //meg kell nézni hogy az adott időpontban melyik soron/gépen volt a feeder:
+  //meg kell nézni hogy az adott időpontban melyik soron/gépen milyen feederekben fordult elő a megadott anyag:
 
     //szerverek azonosítói:
     dbServers := cSqliteDatabase.Create('szerverek', 'SELECT * FROM szerverek', 'sid');
+
+    iRowID := 1;
+    stgFeederek.clean([gzNormal]);
+    stgFeederek.RowCount := 2;
+
 
     repeat
       iserverid := dbServers.pDataset.FieldByName('sid').AsInteger;
@@ -222,21 +222,33 @@ begin
       //csatlakozás a kiválasztott sorhoz tartozó szerverre:
       dbOis_adatok := cMSSQLDatabase.Create('SiplaceOisUser', 'VUTB&&42ukbhSnG7',
               dbServers.pDataset.FieldByName('sName').AsString, 'SiplaceOIS');
+      {
       sSQL := 'SELECT TOP 1 * FROM SiplaceOIS.dbo.' + sUsedComponentTableName + ' ' +
               'WHERE SiplaceOIS.dbo.' + sUsedComponentTableName + '.lPartNumber = ' +
               '(SELECT SiplaceOIS.dbo.PARTNUMBER.lPartNumber FROM SiplaceOIS.dbo.PARTNUMBER ' +
               'WHERE SiplaceOIS.dbo.PARTNUMBER.strPartNumber = ''' + trim(edtAlkatresz1.text) + ''') ' +
               'AND SiplaceOIS.dbo.' + sUsedComponentTableName + '.dtCreated >= ''' + medTol1.Text + '''' +
               'AND SiplaceOIS.dbo.' + sUsedComponentTableName + '.dtCreated <= ''' + medIg1.Text + '''';
+      }
+      sSQL := 'SELECT * FROM SiplaceOIS.dbo.' + sUsedComponentTableName + ' ' +
+              'WHERE SiplaceOIS.dbo.' + sUsedComponentTableName + '.lPartNumber = ' +
+              '(SELECT SiplaceOIS.dbo.PARTNUMBER.lPartNumber FROM SiplaceOIS.dbo.PARTNUMBER ' +
+              'WHERE SiplaceOIS.dbo.PARTNUMBER.strPartNumber = ''' + trim(edtAlkatresz1.text) + ''') ' +
+              'AND SiplaceOIS.dbo.' + sUsedComponentTableName + '.dtCreated >= ''' + medTol1.Text + '''' +
+              'AND SiplaceOIS.dbo.' + sUsedComponentTableName + '.dtCreated <= ''' + medIg1.Text + '''';
+
       dbOis_adatok.RunSQL(sSQL);
       if (dbOis_adatok.GetRecordCount() > 0) then
       begin
+        //dbOis_adatok.pSQLQuery1.Filter := ;
+        ShowMessage(inttostr(dbOis_adatok.GetRecordCount()));
+
         //megvan a feeder:
         sFeeder := dbOis_adatok.pSQLQuery1.FieldByName('strFeederID').AsString;
         //ekkor használta:
         sDatum := dbOis_adatok.pSQLQuery1.FieldByName('dtCreated').AsString;
         //kell a sor és a gép:
-        lid := dbOis_adatok.pSQLQuery1.FieldByName('lid').AsInteger;  //lid alapján meg lehet keresni a gépet...
+        lid := dbOis_adatok.pSQLQuery1.FieldByName('lid').AsInteger;  //lId alapján meg lehet keresni a gépet...
         dbStations := cMSSQLDatabase.Create('SiplaceOisUser', 'VUTB&&42ukbhSnG7',
               dbServers.pDataset.FieldByName('sName').AsString, 'SiplaceOIS');
         sSQL := 'SELECT * FROM SiplaceOIS.dbo.STATION WHERE lid = ' + inttostr(lid);
@@ -246,8 +258,8 @@ begin
         dbStations.Terminate();
       end;
       //ha van adat akkor mehet a listába:
-      if (length(sFeeder) > 0) then
-        ShowMessage('Sor : ' + sLine + #10 + 'Gép : ' + sMachine + #10 + 'Feeder : ' + sFeeder + #10 + 'Dátum : ' + sDatum);
+      //if (length(sFeeder) > 0) then ShowMessage('Sor : ' + sLine + #10 + 'Gép : ' + sMachine + #10 + 'Feeder : ' + sFeeder + #10 + 'Dátum : ' + sDatum);
+
 
       dbOis_adatok.Terminate();
 
